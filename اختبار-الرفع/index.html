@@ -1,14 +1,26 @@
-<!DOCTYPE html>
-<html lang="zh">
-<head>
-    <meta charset="UTF-8">
-    <title>测试上传页面</title>
-</head>
-<body>
-    <h1>上传文件测试</h1>
-    <form>
-        <input type="file" id="fileInput" />
-        <button type="button" onclick="alert('文件已选择！')">提交</button>
-    </form>
-</body>
-</html>
+<form id="uploadForm">
+  <input type="file" id="fileInput" name="file">
+  <button type="submit">Upload</button>
+</form>
+<div id="result"></div>
+
+<script>
+document.getElementById('uploadForm').addEventListener('submit', function (e) {
+  e.preventDefault();
+  const file = document.getElementById('fileInput').files[0];
+  const formData = new FormData();
+  formData.append('file', file);
+
+  fetch('https://file.io', {
+    method: 'POST',
+    body: formData
+  })
+  .then(response => response.json())
+  .then(result => {
+    document.getElementById('result').innerHTML = 'File uploaded: <a href="' + result.link + '" target="_blank">' + result.link + '</a>';
+  })
+  .catch(error => {
+    document.getElementById('result').innerText = 'Upload failed';
+  });
+});
+</script>
